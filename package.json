@@ -5,6 +5,7 @@
   "devDependencies": {
     "@types/jest": "^27.5.2",
     "@types/node": "^16.11.39",
+    "@types/node-fetch": "^2.6.1",
     "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5"
   },
@@ -12,6 +13,8 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "next": "^12.1.6",
+    "node-fetch": "^2.6.6",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-scripts": "5.0.1",
