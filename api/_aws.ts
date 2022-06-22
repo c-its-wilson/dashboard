@@ -4,12 +4,21 @@ import { config } from 'dotenv';
 config();
 
 const REGION = "eu-west-2"
-const { AWS_BUCKET_NAME } = process.env;
-const s3Client = new S3Client({ region: REGION });
+const { REACT_APP_S3_BUCKET_NAME, REACT_APP_S3_ACCESS_KEY_ID, REACT_APP_S3_SECRET_ACCESS_KEY } = process.env;
+
+if (REACT_APP_S3_BUCKET_NAME == null || REACT_APP_S3_ACCESS_KEY_ID == null || REACT_APP_S3_SECRET_ACCESS_KEY == null) {
+    throw new Error("Missing AWS Credentials")
+}
+const s3Client = new S3Client({ 
+    region: REGION, 
+    credentials: { 
+        accessKeyId: REACT_APP_S3_ACCESS_KEY_ID, 
+        secretAccessKey: REACT_APP_S3_SECRET_ACCESS_KEY
+    }
+});
 export { s3Client };
 
-
-async function streamToString(stream: any): Promise<string> {
+export async function streamToString(stream: any): Promise<string> {
     return new Promise((resolve, reject) => {
         const chunks: any[] = [];
         stream.on("data", (chunk: any) => chunks.push(chunk));
@@ -20,12 +29,8 @@ async function streamToString(stream: any): Promise<string> {
 
 export async function getAwsObject(fileName: string) {
     try {
-        if (AWS_BUCKET_NAME == null) {
-            throw new Error("Miising Bucket Name")
-        }
-
         const awsReq = new GetObjectCommand({
-            Bucket: AWS_BUCKET_NAME, Key: fileName
+            Bucket: REACT_APP_S3_BUCKET_NAME, Key: fileName
         })
 
         const awsResp = await s3Client.send(awsReq)
@@ -37,14 +42,10 @@ export async function getAwsObject(fileName: string) {
     }
 }
 
-export async function updatwAwsObject(fileName: string, body: string) {
+export async function updateAwsObject(fileName: string, body: string) {
     try {
-        if (AWS_BUCKET_NAME == null) {
-            throw new Error("Miising Bucket Name")
-        }
-
         const awsReq = new PutObjectCommand({
-            Bucket: AWS_BUCKET_NAME,
+            Bucket: REACT_APP_S3_BUCKET_NAME,
             Key: fileName,
             Body: body
         })
