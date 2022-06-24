@@ -12,7 +12,7 @@ const Bio = ({bio}: {bio: string}) => {
   return (
     <>
       <Box style={{
-        padding: '2em'
+        padding: '1vmin'
       }}>
         <Paper style={{
             textAlign: 'center',
@@ -23,7 +23,7 @@ const Bio = ({bio}: {bio: string}) => {
       </Box>
 
       <Box style={{
-        padding: '2em'
+        padding: '1em'
       }}>
         <Paper style={{
             borderRadius: 10,
@@ -42,7 +42,6 @@ const Bio = ({bio}: {bio: string}) => {
               <br/><br/>
               So hopefully you'll see progress soon!
               😊
-
           </Intro>
         </Paper>
       </Box>

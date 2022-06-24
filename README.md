@@ -8,21 +8,12 @@ A blog style page that willl display my personal strava data using written in No
 
 Please create an issue on the public github repo for any ideas
 
-
-
 Cheers
 
 CW
 
-
-
-
 ------
-
-
-
 
 ## Local Dev
 
 run `vercel dev`
-

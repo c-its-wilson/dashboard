@@ -1,14 +1,13 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
+import React, { useEffect, useState } from "react";
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import Top3 from './TopStats';
+import StatTable from './TopStats';
+import StravaInterface from '../interfaces/stravaInterface';
 
-export default function AutoGrid() {
+export default function Stats({athlete}: {athlete: StravaInterface}) {
   return (
-    <Box sx={{ flexGrow: 1, padding: '2em' }}>
+    <Box sx={{ flexGrow: 1, padding: '1em' }}>
         <Paper style={{
             textAlign: 'center',
             lineHeight: '40px',
@@ -17,13 +16,16 @@ export default function AutoGrid() {
         </Paper>
       <Grid container spacing={4}>
         <Grid item xs>
-            <Top3 name="Fastest 1km" />
-        </Grid>
-        <Grid item xs={4}>
-            {/* <Top3 name="Best 10km" /> */}
+            <StatTable name="Fastest Average Speed" data={athlete.getHighestAverageSpeed()} metric="average_speed" metricLabel="Average Speed (Km/h)" />
         </Grid>
         <Grid item xs>
-            {/* <Top3 name="Furthest Run" endpoint="longestRun"/> */}
+            <StatTable name="Fastest Max Speeds" data={athlete.getMaxSpeed()} metric="max_speed" metricLabel="Max Speed (Km/h)" />
+        </Grid>
+        <Grid item xs>
+            <StatTable name="Best 10km" data={athlete.getFastest10K()} metric="moving_time" metricLabel="Time" />
+        </Grid>
+        <Grid item xs>
+            <StatTable name="Furthest Runs" data={athlete.getLongestRun()} metric="distance" metricLabel="Distance" />
         </Grid>
       </Grid>
     </Box>

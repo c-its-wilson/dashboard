@@ -18,3 +18,15 @@
 a:hover {
   color: #FD4D02
 }
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin: auto;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+}

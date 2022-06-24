@@ -1,4 +1,5 @@
 import { AuthenticationConfig, RefreshTokenResponse, Strava } from "strava-v3";
+import { Run } from "../types/activities/run";
 import { LoggedInAthlete } from "../types/athlete";
 
 export type StravaConfig = AuthenticationConfig & RefreshTokenResponse
@@ -8,10 +9,14 @@ export default interface StravaInterface {
     readonly stravaConfig: StravaConfig;
     readonly hash: string | undefined;
     stravaClient: Strava;
-    myData: LoggedInAthlete | undefined;
+    athleteData: LoggedInAthlete | undefined;
+    activities: any | undefined;
     initialise: () => void;
     getBio: () => string;
-    getLongestRun?: () => any;
-    getFastest10K?: () => any;
+    generateActivitiesData: () => Promise<void>;
+    getLongestRun: () => Run[];
+    getFastest10K: () => Run[];
+    getHighestAverageSpeed: () => Run[];
+    getMaxSpeed: () => Run[];
     getCurrentShoes?: () => any[];
 }

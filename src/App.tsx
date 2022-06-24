@@ -6,8 +6,17 @@ import StravaStats from './components/StravaStats';
 import { config } from 'dotenv';
 import StravaAthlete from './services/athelete'
 import StravaInterface from './interfaces/stravaInterface';
+import loadingImage from './assets/timer.gif'
 
 config()
+
+const Loading = () => {
+  return (
+    <div className='loading'>
+    <img src={loadingImage} />
+    </div>
+  )
+}
 
 function App() {
   const client_id = process.env.REACT_APP_STRAVA_CLIENT_ID;
@@ -19,10 +28,11 @@ function App() {
   useEffect(() => {
     const athlete = new StravaAthlete(client_id)
     const intitialise = async () => {
-      await athlete.initialise()
+      await athlete.initialise();
+      await athlete.generateActivitiesData()
       setCurrAthlete(athlete)
-   }
-   intitialise();
+    }
+    intitialise();
   }, [])
 
   return (
@@ -32,13 +42,25 @@ function App() {
       </header>
       <body>
         <>
-          {!currAthlete ? 'Loading' : <Bio bio={currAthlete.getBio()} />}
-          {/* <StravaStats/> */} 
+          {!currAthlete 
+            ? <Loading/> 
+            : <Body currAthlete={currAthlete}/>
+          }
         </>
       </body>
-      <Footer/>
+      {/* <Footer/> */}
     </div>
   );
+}
+
+
+const Body = ({currAthlete}: {currAthlete: StravaInterface}) => {
+  return (
+    <>
+      <Bio bio={currAthlete.getBio()} />
+      <StravaStats athlete={currAthlete}/> 
+    </>
+  )
 }
 
 export default App;

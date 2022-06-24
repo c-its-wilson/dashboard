@@ -2,6 +2,9 @@ import strava from 'strava-v3';
 import { config } from 'dotenv';
 import StravaInterface from '../interfaces/stravaInterface';
 import { LoggedInAthlete } from '../types/athlete';
+import { Run } from '../types/activities/run'
+import sampleRuns from '../sample/activities.json'
+import sampleData from '../sample/data.json'
 
 config();
 
@@ -24,7 +27,9 @@ class StravaAthlete implements StravaInterface {
         expires_in: 0
     };
     
-    myData: LoggedInAthlete | undefined;
+    athleteData: LoggedInAthlete | undefined;
+
+    activities: Run[] | undefined;
 
     constructor(clientID: string) {
         this.client_id = clientID;
@@ -63,8 +68,7 @@ class StravaAthlete implements StravaInterface {
         if ((Date.now()/1000) > Number(this.stravaConfig.expires_at)) {
             const newStravaConfig = await strava.oauth.refreshToken(this.stravaConfig.refresh_token)
             this.stravaConfig = {...this.stravaConfig, ...newStravaConfig}
-            // updatwAwsObject('config.jsonl', JSON.stringify(this.stravaConfig));
-
+        
             await fetch('/api/storage/PUT?' + new URLSearchParams({
                 key: hash,
                 location: 'config.jsonl'
@@ -74,19 +78,45 @@ class StravaAthlete implements StravaInterface {
             })
         }
 
-        this.myData = await this.stravaClient.athlete.get({id: this.client_id, access_token: this.stravaConfig.access_token}) as LoggedInAthlete
+        this.athleteData = await this.stravaClient.athlete.get({id: this.client_id, access_token: this.stravaConfig.access_token});
     }
 
     getBio (): string {
-        return this.myData!.bio
+        return this.athleteData!.bio
     }
 
     getStuff (): any {
-        return this.myData
+        return this.athleteData
     }
 
     getCurrentShoes(): any {
-        return this.myData!.shoes.find(({primary}) => primary == true)
+        return this.athleteData!.shoes.find(({primary}) => primary == true)
+    }
+
+    async generateActivitiesData() {
+        try {
+            this.activities = await this.stravaClient.athlete.listActivities({id: this.client_id, access_token: this.stravaConfig.access_token, per_page: 200});
+        } catch(e) {
+            console.log('error')
+            console.dir(e)
+        }
+    }
+
+    getFastest10K() {
+        return this.activities!.filter(({type}) => type == 'Run').filter(({distance}) => ((distance > 9900) && (distance < 10100)))
+            .sort((prev, curr) => (prev.moving_time < curr.moving_time) ? -1 : 1).slice(0, 3)
+    };
+
+    getLongestRun() {
+        return this.activities!.filter(({type}) => type == 'Run').sort((prev, curr) => (prev.distance > curr.distance) ? -1 : 1).slice(0,3)
+    }
+
+    getHighestAverageSpeed() {
+        return this.activities!.filter(({type}) => type == 'Run').sort((prev, curr) => (prev.average_speed > curr.average_speed) ? -1 : 1).slice(0,3)
+    }
+
+    getMaxSpeed() {
+        return this.activities!.filter(({type}) => type == 'Run').sort((prev, curr) => (prev.max_speed > curr.max_speed) ? -1 : 1).slice(0,3)
     }
 }
 
