@@ -10,7 +10,7 @@ export default async function storage(req: NextApiRequest, resp: NextApiResponse
     const method = req.query.storage;
     const { key, location } = req.query;
 
-    if (!key || !method) {
+    if (!key || !method || !REACT_APP_S3_ACCESS_KEY_ID) {
         return resp.status(400).json('Bad request')
     }
 
