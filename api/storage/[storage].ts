@@ -1,11 +1,11 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getAwsObject, updateAwsObject } from '../_aws';
-import { NextApiRequest, NextApiResponse } from 'next';
 import { config } from 'dotenv';
 import crypto from 'crypto'
 
 config();
 
-export default async function storage(req: NextApiRequest, resp: NextApiResponse) {
+export default async function storage(req: VercelRequest, resp: VercelResponse) {
     const { REACT_APP_S3_ACCESS_KEY_ID } = process.env;
     const method = req.query.storage;
     const { key, location } = req.query;
