@@ -1,0 +1,12 @@
+{
+    "functions": {
+      "api/storage/[storage].ts": {
+        "memory": 1024
+      },
+      "api/kanye.ts": {
+        "maxDuration": 10
+      }
+    },
+    "cleanUrls": true,
+    "trailingSlash": false
+  }
