@@ -3,8 +3,6 @@ import { config } from 'dotenv';
 import StravaInterface from '../interfaces/stravaInterface';
 import { LoggedInAthlete } from '../types/athlete';
 import { Run } from '../types/activities/run'
-import sampleRuns from '../sample/activities.json'
-import sampleData from '../sample/data.json'
 
 config();
 
