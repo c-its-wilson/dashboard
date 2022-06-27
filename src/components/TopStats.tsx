@@ -24,11 +24,11 @@ const StatTable = ({name, data, metric, metricLabel}: {name: string, data: Run[]
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} size="medium" aria-label="simple table">
                         <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell align="center">{label}</TableCell>
-                            <TableCell align="center">Date</TableCell>
-                        </TableRow>
+                            <TableRow>
+                                <TableCell>Name</TableCell>
+                                <TableCell align="center">{label}</TableCell>
+                                <TableCell align="center">Date</TableCell>
+                            </TableRow>
                         </TableHead>
                         <TableBody>
                         {data.map((run) => {
@@ -36,7 +36,7 @@ const StatTable = ({name, data, metric, metricLabel}: {name: string, data: Run[]
                             return(
                                 <TableRow
                                     key={run.name}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                              
                                 >
                                     <TableCell component="th" scope="row">{run.name}</TableCell>
                                     <TableCell align="center">{convertedMetric}</TableCell>

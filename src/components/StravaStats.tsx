@@ -25,7 +25,7 @@ export default function Stats({athlete}: {athlete: StravaInterface}) {
             <StatTable name="Best 10km" data={athlete.getFastest10K()} metric="moving_time" metricLabel="Time" />
         </Grid>
         <Grid item xs>
-            <StatTable name="Furthest Runs" data={athlete.getLongestRun()} metric="distance" metricLabel="Distance" />
+            <StatTable name="Longest Runs" data={athlete.getLongestRun()} metric="distance" metricLabel="Distance" />
         </Grid>
       </Grid>
     </Box>
