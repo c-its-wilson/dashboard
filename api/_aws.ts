@@ -18,26 +18,17 @@ const s3Client = new S3Client({
 });
 export { s3Client };
 
-export async function streamToString(stream: any): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const chunks: any[] = [];
-        stream.on("data", (chunk: any) => chunks.push(chunk));
-        stream.on("error", reject);
-        stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
-    });
-}
-
 export async function getAwsObject(fileName: string) {
     try {
         const awsReq = new GetObjectCommand({
             Bucket: REACT_APP_S3_BUCKET_NAME, Key: fileName
-        })
+        });
 
-        const awsResp = await s3Client.send(awsReq)
+        const awsResp = await s3Client.send(awsReq);
         const config = (await streamToString(awsResp.Body));
         return JSON.parse(config)
     } catch (err) {
-        console.log("Error", err);
+        console.log("Failed to get Object: ", err);
         throw err;
     }
 }
@@ -48,10 +39,19 @@ export async function updateAwsObject(fileName: string, body: string) {
             Bucket: REACT_APP_S3_BUCKET_NAME,
             Key: fileName,
             Body: body
-        })
-        await s3Client.send(awsReq)
+        });
+        await s3Client.send(awsReq);
     } catch (err) {
-        console.log("Error", err);
+        console.log("Failed to update Object: ", err);
         throw err;
     }
+}
+
+async function streamToString(stream: any): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const chunks: any[] = [];
+        stream.on("data", (chunk: any) => chunks.push(chunk));
+        stream.on("error", reject);
+        stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+    });
 }

@@ -13,7 +13,7 @@ config()
 const Loading = () => {
   return (
     <div className='loading'>
-    <img src={loadingImage} />
+      <img src={loadingImage} />
     </div>
   )
 }
