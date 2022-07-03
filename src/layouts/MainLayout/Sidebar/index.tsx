@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import SidebarMenu from './SidebarMenu';
 import React, { useContext } from 'react';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import { BrowserView, MobileView } from 'react-device-detect';
 import { SidebarContext } from '../../../contexts/SidebarContext';
 
 import {
@@ -33,35 +31,6 @@ function Sidebar() {
   const closeSidebar = () => toggleSidebar();
   const theme = useTheme();
 
-  const drawer = (
-    <>
-        <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-            <Box sx={{ display: 'flex', p: 2, mx: 'auto' }}>
-                Hello Christopher
-            </Box>
-        </Box>
-        <BrowserView>
-            <PerfectScrollbar
-                component="div"
-                style={{
-                    height: !sidebarToggle ? 'calc(100vh - 56px)' : 'calc(100vh - 88px)',
-                    paddingLeft: '16px',
-                    paddingRight: '16px'
-                }}
-            >
-                sdfsdfshdfklj
-                {/* <MenuList /> */}
-            </PerfectScrollbar>
-        </BrowserView>
-        <MobileView>
-            <Box sx={{ px: 2 }}>
-                sdfsdfsdf
-                {/* <MenuList /> */}
-            </Box>
-        </MobileView>
-    </>
-  );
-
   return (
     <>
         {/* Desktop sidebar */}
@@ -83,13 +52,8 @@ function Sidebar() {
             }}
         >
             <Box mt={3}>
-                <Box
-                    mx={2}
-                    sx={{
-                    width: 55
-                    }}
-                >
-                    Hello Desktop
+                <Box mx={2} sx={{ width: 100 }}>
+                    Logo to go here
                 </Box>
             </Box>
             <Divider
@@ -98,19 +62,19 @@ function Sidebar() {
                     mx: theme.spacing(2),
                     background: theme.colors.alpha.trueWhite[10]
                 }}
-                />
+            />
                 <SidebarMenu />
             <Divider
-            sx={{
-                background: theme.colors.alpha.trueWhite[10]
-            }}
+                sx={{
+                    background: theme.colors.alpha.trueWhite[10]
+                }}
             />
         </SidebarWrapper>
 
         {/* Mobile Sidebar */}
         <Drawer
             sx={{
-            boxShadow: `${theme.sidebar.boxShadow}`
+                boxShadow: `${theme.sidebar.boxShadow}`
             }}
             anchor={theme.direction === 'rtl' ? 'right' : 'left'}
             open={sidebarToggle}
@@ -127,25 +91,20 @@ function Sidebar() {
                 }}
             >
                 <Box mt={3}>
-                    <Box
-                        mx={2}
-                        sx={{
-                        width: 52
-                        }}
-                    >
-                    Hello Mobile
+                    <Box mx={2} sx={{ width: 100 }}>
+                        Mobile logo to go here
                     </Box>
                 </Box>
                 <Divider
-                sx={{
-                    mt: theme.spacing(3),
-                    mx: theme.spacing(2),
-                    background: theme.colors.alpha.trueWhite[10]
-                }}
+                    sx={{
+                        mt: theme.spacing(3),
+                        mx: theme.spacing(2),
+                        background: theme.colors.alpha.trueWhite[10]
+                    }}
                 />
                     <SidebarMenu />
-                </SidebarWrapper>
-            </Drawer>
+            </SidebarWrapper>
+        </Drawer>
     </>
   );
 

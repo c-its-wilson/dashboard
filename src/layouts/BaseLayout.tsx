@@ -3,16 +3,48 @@ import PropTypes from 'prop-types';
 import { Outlet } from 'react-router-dom';
 
 // import SidebarLayout from './MainLayout';
-import { Box, alpha, lighten, useTheme } from '@mui/material';
+import { Box, alpha, lighten, useTheme, styled, Container } from '@mui/material';
 
 import Sidebar from './MainLayout/Sidebar';
 import Header from './MainLayout/Header';
+import { drawerWidth } from '../services/constant';
 
 export interface BaseLayoutProps {
   children?: ReactNode;
 }
 
-const BaseLayout: FC<BaseLayoutProps> = ({ children }) => {
+const mainContent = {
+    height: '100%,',
+    display: 'flex',
+    flex: 1,
+    overflow: 'auto',
+    'flex-direction': 'column',
+    'align-items': 'center',
+    'justify-content': 'center',
+}
+
+// styles
+const Main = styled('main')(({ theme }) => ({
+  ...mainContent,
+  ...({
+      transition: theme.transitions.create('margin', {
+          easing: theme.transitions.easing.easeOut,
+          duration: theme.transitions.duration.enteringScreen
+      }),
+      marginLeft: 0,
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
+      width: `calc(100% - ${drawerWidth}px)`,
+      [theme.breakpoints.down('md')]: {
+          marginLeft: '20px'
+      },
+      [theme.breakpoints.down('sm')]: {
+          marginLeft: '10px'
+      }
+  })
+}));
+
+const BaseLayout: FC<BaseLayoutProps> = () => {
   const theme = useTheme();
   return (
      <>
@@ -20,6 +52,7 @@ const BaseLayout: FC<BaseLayoutProps> = ({ children }) => {
           sx={{
             flex: 1,
             height: '100%',
+            display: 'flex',
 
             '.MuiPageTitle-wrapper': {
               background:
@@ -57,12 +90,11 @@ const BaseLayout: FC<BaseLayoutProps> = ({ children }) => {
               }
             }}
           >
-            <Box display="block">
+            <Container maxWidth="xl" sx={{paddingTop: '30px'}}>
               <Outlet />
-            </Box>
+            </Container>
           </Box>
         </Box>
-      {children || <Outlet />}
      </>
   );
 };
