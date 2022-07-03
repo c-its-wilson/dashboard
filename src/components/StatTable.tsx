@@ -16,13 +16,12 @@ const StatTable = ({name, data, metric, metricLabel}: {name: string, data: Run[]
         <>
             <Paper style={{
                 textAlign: 'center',
-                padding: 1,
                 borderRadius: 10,
             }}>
                 <h3>{name}</h3>
                 <Divider variant="fullWidth" />
                 <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} size="medium" aria-label="simple table">
+                    <Table sx={{ minWidth: 500 }} size="medium" aria-label="simple table">
                         <TableHead>
                             <TableRow>
                                 <TableCell>Name</TableCell>
@@ -34,10 +33,7 @@ const StatTable = ({name, data, metric, metricLabel}: {name: string, data: Run[]
                         {data.map((run) => {
                             const convertedMetric = convertMetric(metric, run[metric])
                             return(
-                                <TableRow
-                                    key={run.name}
-                              
-                                >
+                                <TableRow key={run.name}>
                                     <TableCell component="th" scope="row">{run.name}</TableCell>
                                     <TableCell align="center">{convertedMetric}</TableCell>
                                     <TableCell align="center">{run.start_date.split('T')[0]}</TableCell>

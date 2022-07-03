@@ -4,10 +4,10 @@ const posts: BlogPosts = [
     {
         date: '3/7/22',
         post: <p>
-                Progress on the frontend is going well, I've been borrowing elements from a few templates I found online which I think make a really big difference.
-                The site has now been transformed from a basic static site to a responsive/reactive site, that will be easy to expand upon if I ever want to.
-                <br/>
-                Still need to plug the Strava data back into the site once I've got the widgets finalised and might have to come up with a logo for the top left corner
+                Progress! The new frontend is going well, I've been borrowing elements from a few templates I found online which I think make a really big difference.
+                The site has now been transformed from a basic static site to a responsive/reactive site, that will be easy to expand upon if desired.
+                <br/><br/>
+                Still pulling in Strava data back into the site once and thinking about what else I could add to it but all in good time!
             </p>
     },
     {

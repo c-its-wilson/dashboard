@@ -27,6 +27,8 @@ class StravaAthlete implements StravaInterface {
     
     athleteData: LoggedInAthlete | undefined;
 
+    stats: any | undefined;
+
     activities: Run[] | undefined;
 
     constructor(clientID: string) {
@@ -75,7 +77,6 @@ class StravaAthlete implements StravaInterface {
                 body: JSON.stringify(this.stravaConfig)
             })
         }
-
         this.athleteData = await this.stravaClient.athlete.get({id: this.client_id, access_token: this.stravaConfig.access_token});
     }
 
@@ -100,10 +101,13 @@ class StravaAthlete implements StravaInterface {
         }
     }
 
-    getFastest10K() {
-        return this.activities!.filter(({type}) => type == 'Run').filter(({distance}) => ((distance > 9900) && (distance < 10100)))
+    getFastestDistance(distance: number) {
+        const ACCURACY = 3;
+        const maxDistance = distance * (1 + (ACCURACY / 100))
+        const minDistance = distance * (1 - (ACCURACY / 100))
+        return this.activities!.filter(({type}) => type == 'Run').filter(({distance}) => ((distance > minDistance) && (distance < maxDistance)))
             .sort((prev, curr) => (prev.moving_time < curr.moving_time) ? -1 : 1).slice(0, 3)
-    };
+    }
 
     getLongestRun() {
         return this.activities!.filter(({type}) => type == 'Run').sort((prev, curr) => (prev.distance > curr.distance) ? -1 : 1).slice(0,3)

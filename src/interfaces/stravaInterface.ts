@@ -10,12 +10,13 @@ export default interface StravaInterface {
     readonly hash: string | undefined;
     stravaClient: Strava;
     athleteData: LoggedInAthlete | undefined;
+    stats: any | undefined;
     activities: any | undefined;
     initialise: () => void;
     getBio: () => string;
     generateActivitiesData: () => Promise<void>;
     getLongestRun: () => Run[];
-    getFastest10K: () => Run[];
+    getFastestDistance: (distance: number) => Run[];
     getHighestAverageSpeed: () => Run[];
     getMaxSpeed: () => Run[];
     getCurrentShoes?: () => any[];

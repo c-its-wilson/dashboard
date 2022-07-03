@@ -1,5 +1,5 @@
 export type LoggedInAthlete = {
-    id: string,
+    id: number,
     username: string,
     resource_state: number,
     firstname: string,
@@ -44,7 +44,7 @@ export type LoggedInAthlete = {
       private: boolean,
       member_count: number,
       featured: boolean,
-      verified: true,
+      verified: boolean,
       url: string,
       membership: string,
       admin: boolean,
