@@ -14,7 +14,9 @@ import {
   lighten,
   darken,
   IconButton,
+  Button,
 } from '@mui/material';
+import Scrollbar from '../../../components/Scrollbar';
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -53,38 +55,45 @@ function Sidebar() {
                 theme.palette.mode === 'dark' ? theme.sidebar.boxShadow : 'none'
             }}
         >
-            <Box mt={3}>
-                <Box mx={2} sx={{ width: 100 }}>
-                    Logo to go here
+            <Scrollbar>
+                <Box mt={3}>
+                    <Box mx={2} sx={{ width: 100 }}>
+                        Logo to go here
+                    </Box>
                 </Box>
-            </Box>
+                <Divider
+                    sx={{
+                        mt: theme.spacing(3),
+                        mx: theme.spacing(2),
+                        background: theme.colors.alpha.trueWhite[10]
+                    }}
+                />
+                <SidebarMenu />
+                <Divider
+                    sx={{
+                        background: theme.colors.alpha.trueWhite[10]
+                    }}
+                />
+            </Scrollbar>
             <Divider
-                sx={{
-                    mt: theme.spacing(3),
-                    mx: theme.spacing(2),
-                    background: theme.colors.alpha.trueWhite[10]
-                }}
-            />
-            <SidebarMenu />
-            <Divider
-                sx={{
-                    background: theme.colors.alpha.trueWhite[10]
-                }}
+              sx={{
+                background: theme.colors.alpha.trueWhite[10]
+              }}
             />
             <Box sx={{
                 position: "fixed",
                 left: '120px',
-                bottom: 0,
+                padding: theme.spacing(1, 0),
             }}>
-                <IconButton aria-label="delete" size="large">
-                    <a href="https://github.com/c-its-wilson/strava-dashboard" style={{textDecoration: "none"}} >
-                        <GitHubIcon sx={{
-                            fontSize: '30px',
-                            color: '#F5F0F6',
-                            marginBottom: '40px'
-                        }} />
-                    </a>
-                </IconButton>             
+              <IconButton aria-label="delete" size="large">
+                <a href="https://github.com/c-its-wilson/strava-dashboard" style={{textDecoration: "none"}} >
+                  <GitHubIcon sx={{
+                    fontSize: '40px',
+                    color: '#F5F0F6',
+                    marginBottom: '40px'
+                  }} />
+                </a>
+              </IconButton>         
             </Box>
         </SidebarWrapper>
 
@@ -107,6 +116,7 @@ function Sidebar() {
                         : darken(theme.colors.alpha.black[100], 0.5)
                 }}
             >
+              <Scrollbar>
                 <Box mt={3}>
                     <Box mx={2} sx={{ width: 100 }}>
                         Mobile logo to go here
@@ -119,7 +129,28 @@ function Sidebar() {
                         background: theme.colors.alpha.trueWhite[10]
                     }}
                 />
-                    <SidebarMenu />
+                <SidebarMenu />
+              </Scrollbar>
+                <Divider
+                    sx={{
+                        background: theme.colors.alpha.trueWhite[10]
+                    }}
+                />
+                <Box sx={{
+                    position: "fixed",
+                    left: '120px',
+                    padding: theme.spacing(1, 0),
+                }}>
+                  <IconButton aria-label="delete" size="large">
+                    <a href="https://github.com/c-its-wilson/strava-dashboard" style={{textDecoration: "none"}} >
+                      <GitHubIcon sx={{
+                        fontSize: '40px',
+                        color: '#F5F0F6',
+                        marginBottom: '40px'
+                      }} />
+                    </a>
+                  </IconButton>         
+                </Box>
             </SidebarWrapper>
         </Drawer>
     </>
