@@ -83,6 +83,7 @@ function Sidebar() {
             <Box sx={{
                 position: "fixed",
                 left: '120px',
+                padding: theme.spacing(1, 0),
             }}>
               <IconButton aria-label="delete" size="large">
                 <a href="https://github.com/c-its-wilson/strava-dashboard" style={{textDecoration: "none"}} >
@@ -115,6 +116,7 @@ function Sidebar() {
                         : darken(theme.colors.alpha.black[100], 0.5)
                 }}
             >
+              <Scrollbar>
                 <Box mt={3}>
                     <Box mx={2} sx={{ width: 100 }}>
                         Mobile logo to go here
@@ -127,7 +129,28 @@ function Sidebar() {
                         background: theme.colors.alpha.trueWhite[10]
                     }}
                 />
-                    <SidebarMenu />
+                <SidebarMenu />
+              </Scrollbar>
+                <Divider
+                    sx={{
+                        background: theme.colors.alpha.trueWhite[10]
+                    }}
+                />
+                <Box sx={{
+                    position: "fixed",
+                    left: '120px',
+                    padding: theme.spacing(1, 0),
+                }}>
+                  <IconButton aria-label="delete" size="large">
+                    <a href="https://github.com/c-its-wilson/strava-dashboard" style={{textDecoration: "none"}} >
+                      <GitHubIcon sx={{
+                        fontSize: '40px',
+                        color: '#F5F0F6',
+                        marginBottom: '40px'
+                      }} />
+                    </a>
+                  </IconButton>         
+                </Box>
             </SidebarWrapper>
         </Drawer>
     </>
