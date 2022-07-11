@@ -92,6 +92,11 @@ class StravaAthlete implements StravaInterface {
         return this.athleteData!.shoes.find(({primary}) => primary == true)
     }
 
+    distanceRanInShoes() {
+        const shoes = this.athleteData!.shoes.find(({primary}) => primary === true);
+        return shoes ? shoes.converted_distance : 'N/A';
+    }
+
     async generateActivitiesData() {
         try {
             this.activities = await this.stravaClient.athlete.listActivities({id: this.client_id, access_token: this.stravaConfig.access_token, per_page: 200});
@@ -113,13 +118,6 @@ class StravaAthlete implements StravaInterface {
         return this.activities!.filter(({type}) => type == 'Run').sort((prev, curr) => (prev.distance > curr.distance) ? -1 : 1).slice(0,3)
     }
 
-    getHighestAverageSpeed() {
-        return this.activities!.filter(({type}) => type == 'Run').sort((prev, curr) => (prev.average_speed > curr.average_speed) ? -1 : 1).slice(0,3)
-    }
-
-    getMaxSpeed() {
-        return this.activities!.filter(({type}) => type == 'Run').sort((prev, curr) => (prev.max_speed > curr.max_speed) ? -1 : 1).slice(0,3)
-    }
 }
 
 export default StravaAthlete

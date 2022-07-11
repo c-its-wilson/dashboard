@@ -17,7 +17,6 @@ export default interface StravaInterface {
     generateActivitiesData: () => Promise<void>;
     getLongestRun: () => Run[];
     getFastestDistance: (distance: number) => Run[];
-    getHighestAverageSpeed: () => Run[];
-    getMaxSpeed: () => Run[];
     getCurrentShoes?: () => any[];
+    distanceRanInShoes: () => number|string;
 }

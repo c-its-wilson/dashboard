@@ -64,6 +64,7 @@ export type LoggedInAthlete = {
       primary: boolean,
       name: string,
       resource_state: number,
-      distance: number
+      distance: number,
+      converted_distance: number
     }[]
 }
