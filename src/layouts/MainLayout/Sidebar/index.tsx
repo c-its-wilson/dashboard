@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import SidebarMenu from './SidebarMenu';
 import React, { useContext } from 'react';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import { SidebarContext } from '../../../contexts/SidebarContext';
 
 import {
@@ -12,6 +13,7 @@ import {
   useTheme,
   lighten,
   darken,
+  IconButton,
 } from '@mui/material';
 
 const SidebarWrapper = styled(Box)(
@@ -23,14 +25,14 @@ const SidebarWrapper = styled(Box)(
         z-index: 7;
         height: 100%;
         padding-bottom: 68px;
-`
+    `
 );
 
 function Sidebar() {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const closeSidebar = () => toggleSidebar();
   const theme = useTheme();
-
+  
   return (
     <>
         {/* Desktop sidebar */}
@@ -63,12 +65,27 @@ function Sidebar() {
                     background: theme.colors.alpha.trueWhite[10]
                 }}
             />
-                <SidebarMenu />
+            <SidebarMenu />
             <Divider
                 sx={{
                     background: theme.colors.alpha.trueWhite[10]
                 }}
             />
+            <Box sx={{
+                position: "fixed",
+                left: '120px',
+                bottom: 0,
+            }}>
+                <IconButton aria-label="delete" size="large">
+                    <a href="https://github.com/c-its-wilson/strava-dashboard" style={{textDecoration: "none"}} >
+                        <GitHubIcon sx={{
+                            fontSize: '30px',
+                            color: '#F5F0F6',
+                            marginBottom: '40px'
+                        }} />
+                    </a>
+                </IconButton>             
+            </Box>
         </SidebarWrapper>
 
         {/* Mobile Sidebar */}
