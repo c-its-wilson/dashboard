@@ -7,7 +7,7 @@ import StravaInterface from '../interfaces/stravaInterface';
 import ChartWidget from "./ChartWidget";
 
 export default function Stats({athlete}: {athlete: StravaInterface}) {
-  const runs10Km = athlete.getFastestDistance(10000, 1);
+  const runs10Km = athlete.getFastestDistance(10000, 3);
   const bestRaceTime = convertMetric('moving_time', runs10Km[0].moving_time);
 
   const runs5Km = athlete.getFastestDistance(5000, 25);
@@ -39,9 +39,9 @@ export default function Stats({athlete}: {athlete: StravaInterface}) {
         <Grid item xs>
             <StatTable name="Best 10k races" data={runs10Km} metric="moving_time" metricLabel="Time" />
         </Grid>
-        <Grid item xs>
+        {/* <Grid item xs> */}
           {/* <ChartWidget /> */}
-        </Grid>
+        {/* </Grid> */}
       </Grid>
     </>
   );
