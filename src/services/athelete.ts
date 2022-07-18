@@ -2,13 +2,13 @@ import strava from 'strava-v3';
 import { config } from 'dotenv';
 import StravaInterface from '../interfaces/stravaInterface';
 import { LoggedInAthlete } from '../types/athlete';
-import { Run } from '../types/activities/run'
+import { Run } from '../types/activities/run';
 
 config();
 
 class StravaAthlete implements StravaInterface {
 
-    client_id = process.env.STRAVA_CLIENT_ID;
+    client_id = process.env.REACT_APP_STRAVA_CLIENT_ID;
 
     hash = process.env.REACT_APP_HASH;
 
@@ -50,9 +50,9 @@ class StravaAthlete implements StravaInterface {
         try {
             const resp = await fetch('/api/storage/GET?' + new URLSearchParams({
                 key: hash,
-                location: 'config.jsonl'
+                location: this.client_id
             }))
-            this.stravaConfig = await resp.json()
+            this.stravaConfig = await resp.json();
         } catch (err) {
             console.log("Error", err);
             throw err;
@@ -71,7 +71,7 @@ class StravaAthlete implements StravaInterface {
         
             await fetch('/api/storage/PUT?' + new URLSearchParams({
                 key: hash,
-                location: 'config.jsonl'
+                location: this.client_id
             }), {
                 method: 'PUT',
                 body: JSON.stringify(this.stravaConfig)
@@ -81,15 +81,15 @@ class StravaAthlete implements StravaInterface {
     }
 
     getBio (): string {
-        return this.athleteData!.bio
+        return this.athleteData!.bio;
     }
 
     getStuff (): any {
-        return this.athleteData
+        return this.athleteData;
     }
 
     getCurrentShoes(): any {
-        return this.athleteData!.shoes.find(({primary}) => primary == true)
+        return this.athleteData!.shoes.find(({primary}) => primary == true);
     }
 
     distanceRanInShoes() {
@@ -108,14 +108,14 @@ class StravaAthlete implements StravaInterface {
 
     getFastestDistance(distance: number) {
         const ACCURACY = 3;
-        const maxDistance = distance * (1 + (ACCURACY / 100))
-        const minDistance = distance * (1 - (ACCURACY / 100))
+        const maxDistance = distance * (1 + (ACCURACY / 100));
+        const minDistance = distance * (1 - (ACCURACY / 100));
         return this.activities!.filter(({type}) => type == 'Run').filter(({distance}) => ((distance > minDistance) && (distance < maxDistance)))
-            .sort((prev, curr) => (prev.moving_time < curr.moving_time) ? -1 : 1).slice(0, 3)
+            .sort((prev, curr) => (prev.moving_time < curr.moving_time) ? -1 : 1).slice(0, 3);
     }
 
     getLongestRun() {
-        return this.activities!.filter(({type}) => type == 'Run').sort((prev, curr) => (prev.distance > curr.distance) ? -1 : 1).slice(0,3)
+        return this.activities!.filter(({type}) => type == 'Run').sort((prev, curr) => (prev.distance > curr.distance) ? -1 : 1).slice(0,3);
     }
 
 }
