@@ -50,7 +50,7 @@ class StravaAthlete implements StravaInterface {
         try {
             const resp = await fetch('/api/storage/GET?' + new URLSearchParams({
                 key: hash,
-                location: this.client_id
+                location: `${this.client_id}.jsonl`
             }))
             this.stravaConfig = await resp.json();
         } catch (err) {
@@ -71,7 +71,7 @@ class StravaAthlete implements StravaInterface {
         
             await fetch('/api/storage/PUT?' + new URLSearchParams({
                 key: hash,
-                location: this.client_id
+                location: `${this.client_id}.jsonl`
             }), {
                 method: 'PUT',
                 body: JSON.stringify(this.stravaConfig)
@@ -106,16 +106,16 @@ class StravaAthlete implements StravaInterface {
         }
     }
 
-    getFastestDistance(distance: number) {
+    getFastestDistance(distance: number, valuesToGet: number) {
         const ACCURACY = 3;
         const maxDistance = distance * (1 + (ACCURACY / 100));
         const minDistance = distance * (1 - (ACCURACY / 100));
         return this.activities!.filter(({type}) => type == 'Run').filter(({distance}) => ((distance > minDistance) && (distance < maxDistance)))
-            .sort((prev, curr) => (prev.moving_time < curr.moving_time) ? -1 : 1).slice(0, 3);
+            .sort((prev, curr) => (prev.moving_time < curr.moving_time) ? -1 : 1).slice(0, valuesToGet);
     }
 
     getLongestRun() {
-        return this.activities!.filter(({type}) => type == 'Run').sort((prev, curr) => (prev.distance > curr.distance) ? -1 : 1).slice(0,3);
+        return this.activities!.filter(({type}) => type == 'Run').sort((prev, curr) => (prev.distance > curr.distance) ? -1 : 1).slice(0,3)
     }
 
 }
