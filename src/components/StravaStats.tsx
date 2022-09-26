@@ -71,6 +71,8 @@ export default function Stats({ athlete }: { athlete: StravaInterface }) {
             data={generateHistogramData(runs5Km, "moving_time", 30, 1200, 2100)}
             dataLabel="Number of Runs"
             metric="moving_time"
+            xAxisLabel="Time"
+            yAxisLabel="Number of Runs"
           />
         </Grid>
         <Grid item sm={12} xs={12} md={6} lg={6}>
@@ -79,6 +81,8 @@ export default function Stats({ athlete }: { athlete: StravaInterface }) {
             data={generateHistogramData(runs, "moving_time", 60)}
             dataLabel="Number of Runs"
             metric="moving_time"
+            xAxisLabel="Time"
+            yAxisLabel="Number of Runs"
           />
         </Grid>
         <Grid item sm={12} xs={12} md={6} lg={6}>
@@ -87,14 +91,18 @@ export default function Stats({ athlete }: { athlete: StravaInterface }) {
             data={generateHistogramData(runs, "average_speed", 0.25, 1, 5)}
             dataLabel="Number of Runs"
             metric="average_speed"
+            xAxisLabel="Speed (km/h)"
+            yAxisLabel="Number of Runs"
           />
         </Grid>
         <Grid item sm={12} xs={12} md={6} lg={6}>
           <Histogram
             name="Run distance Distribution"
-            data={generateHistogramData(runs, "distance", 250, 0, 20000)}
+            data={generateHistogramData(runs, "distance", 500, 0, 25000)}
             dataLabel="Number of Runs"
             metric="distance"
+            xAxisLabel="Distance (m)"
+            yAxisLabel="Number of Runs"
           />
         </Grid>
       </Grid>

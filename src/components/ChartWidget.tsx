@@ -30,11 +30,15 @@ const Histogram = ({
   data,
   dataLabel,
   metric,
+  xAxisLabel,
+  yAxisLabel,
 }: {
   name: string;
   data: HistogramData[];
   dataLabel: string;
   metric: string;
+  xAxisLabel: string;
+  yAxisLabel: string;
 }) => {
   ChartJS.register(
     CategoryScale,
@@ -53,11 +57,25 @@ const Histogram = ({
   const chartOptions = {
     responsive: true,
     layout: {
-      padding: 25,
+      padding: 20,
     },
     plugins: {
       legend: {
         display: false,
+      },
+    },
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: yAxisLabel,
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: xAxisLabel,
+        },
       },
     },
   };
