@@ -1,168 +1,150 @@
-import React from 'react'
+import React from "react";
 import {
-  Card,
-  Box,
-  Typography,
-  Avatar,
-  Grid,
-  alpha,
-  useTheme,
-  styled
-} from '@mui/material';
-import Chart from 'react-apexcharts';
-import type { ApexOptions } from 'apexcharts';
+  Table,
+  TableRow,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableContainer,
+  Paper,
+} from "@mui/material";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend,
+} from "chart.js";
+import { HistogramData } from "../interfaces/stravaInterface";
+import { Bar } from "react-chartjs-2";
+import { Run } from "../types/activities/run";
+import { convertMetric } from "../helpers/converters";
 
+const Histogram = ({
+  name,
+  data,
+  dataLabel,
+  metric,
+}: {
+  name: string;
+  data: HistogramData[];
+  dataLabel: string;
+  metric: string;
+}) => {
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Filler,
+    Legend
+  );
 
-function ChartWidget({xAxisLabel, xAxisValues, yAxisLabel, yAxisValues}: {xAxisLabel: string, xAxisValues: string[], yAxisLabel: string, yAxisValues: number[]}) {
-  const theme = useTheme();
-
-  const chartOptions: ApexOptions = {
-    chart: {
-      background: 'transparent',
-      toolbar: {
-        show: false
+  const chartOptions = {
+    responsive: true,
+    layout: {
+      padding: 25,
+    },
+    plugins: {
+      legend: {
+        display: false,
       },
-      sparkline: {
-        enabled: true
-      },
-      zoom: {
-        enabled: false
-      }
     },
-    fill: {
-      gradient: {
-        shade: 'light',
-        type: 'vertical',
-        shadeIntensity: 0.1,
-        inverseColors: false,
-        opacityFrom: 0.8,
-        opacityTo: 0,
-        stops: [0, 100]
-      }
-    },
-    colors: [theme.colors.primary.main],
-    dataLabels: {
-      enabled: false
-    },
-    theme: {
-      mode: theme.palette.mode
-    },
-    stroke: {
-      show: true,
-      colors: [theme.colors.primary.main],
-      width: 3
-    },
-    legend: {
-      show: false
-    },
-    labels: xAxisValues,
-    xaxis: {
-      labels: {
-        show: true
-      },
-      axisBorder: {
-        show: true
-      },
-      axisTicks: {
-        show: true
-      }
-    },
-    yaxis: {
-      show: true,
-      tickAmount: 5
-    },
-    tooltip: {
-      x: {
-        show: true
-      },
-      y: {
-        title: {
-          formatter: function () {
-            return 'Price: $';
-          }
-        }
-      },
-      marker: {
-        show: false
-      }
-    }
   };
-  const chart1Data = [{name: yAxisLabel, data: yAxisValues}];
+
+  let labels: string[] = [];
+  let runCount: number[] = [];
+  data.forEach((data, index) => {
+    labels[index] = convertMetric(metric, data.bucketValue);
+    runCount[index] = data.count;
+  });
+  const chartData = {
+    labels,
+    datasets: [
+      {
+        fill: true,
+        label: dataLabel,
+        data: runCount,
+        borderColor: "rgb(90, 104, 246)",
+        backgroundColor: "rgba(139, 150, 248)",
+        barPercentage: 1,
+        categoryPercentage: 1,
+      },
+    ],
+  };
 
   return (
-    <Grid
-      container
-      direction="row"
-      justifyContent="center"
-      alignItems="stretch"
-      spacing={3}
+    <Paper
+      style={{
+        textAlign: "center",
+        borderRadius: 10,
+      }}
     >
-      <Grid item md={8} xs={12}>
-        <Card
-          sx={{
-            overflow: 'visible'
-          }}
-        >
-          <Box
-            sx={{
-              p: 3  
-            }}
-          >
-            <Box display="flex" alignItems="center" justifyContent="flex-start">
-              <Box>
-                <Typography variant="h2" noWrap>
-                  Average 5 km run time
-                </Typography>
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                pt: 3
-              }}
-            >
-              <Typography
-                variant="h2"
-                sx={{
-                  pr: 1,
-                  mb: 1
-                }}
-              >
-                $56,475.99
-              </Typography>
-              <span color={theme.palette.success.main}> <b>+12.5%</b> </span>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-start'
-              }}
-            >
-              <span background-color={theme.colors.success.lighter} color={theme.palette.success.main}>+$500</span>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  pl: 1
-                }}
-              >
-                last 24h
-              </Typography>
-            </Box>
-          </Box>
-          <Chart
-            options={chartOptions}
-            series={chart1Data}
-            type="area"
-            height={200}
-          />
-        </Card>
-      </Grid>
-    </Grid>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 350 }} size="medium" aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="center" colSpan={3}>
+                <span style={{ fontWeight: "bolder", fontSize: "0.95rem" }}>
+                  {name}
+                </span>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <Bar options={chartOptions} data={chartData} />
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
+};
+
+export function generateHistogramData(
+  activities: Run[],
+  param: keyof Run,
+  bucketSize: number,
+  minBucket: number = 0,
+  maxBucket: number = 3600
+): HistogramData[] {
+  let histogramData: HistogramData[] = [];
+  const numOfBuckets = Math.ceil((maxBucket - minBucket) / bucketSize);
+  for (let bucketNum = 0; bucketNum <= numOfBuckets; bucketNum++) {
+    const bucket = {
+      bucketValue: minBucket + bucketSize * bucketNum,
+      count: 0,
+    };
+    histogramData[bucketNum] = bucket;
+  }
+
+  activities.forEach((activity) => {
+    let value = activity[param];
+    if (typeof value !== "number") {
+      throw new Error(
+        `Cannot compare the ${param} value of this activity, please pick another param`
+      );
+    }
+
+    for (let i = 0; i < histogramData.length; i++) {
+      if (value < histogramData[i].bucketValue) {
+        if (i == 0) continue; //Disregard value
+        histogramData[i - 1].count++;
+        break;
+      }
+    }
+  });
+
+  return histogramData;
 }
 
-export default ChartWidget;
+export default Histogram;
