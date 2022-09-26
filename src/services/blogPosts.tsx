@@ -2,6 +2,16 @@ import React from 'react'
 
 const posts: BlogPosts = [
     {
+        date: '26/9/22',
+        post: <p>
+            Hurray! After long last I've finally added in the graph/histogram widget I've been thinking about for months. I haven't really touched this site in months
+            but had a bit of a push this weekend. Thw result looks quite nice I think, though does play havoc when the browser window changes sizes but who does that anyways.
+            My next small thing I'd like to do is to finally get a logo or icon for the top left corner. I definetly think it needs something there.
+            <br/><br/>
+            Hopefully this renewed intrest in the site will also give me a bit of a push to get back into running which I've neglated over the summer. So I'm sure yu'll hear again from me soon!
+            </p>
+    },
+    {
         date: '3/7/22',
         post: <p>
                 Progress! The new frontend is going well, I've been borrowing elements from a few templates I found online which I think make a really big difference.
