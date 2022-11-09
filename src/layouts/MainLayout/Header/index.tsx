@@ -64,7 +64,7 @@ function Header() {
         alignItems="center"
         spacing={2}
       >
-        <h1>Strava Dashboard</h1>
+        <h1>Dashboard</h1>
       </Stack>
       <Box display="flex" alignItems="center">
         <Box
