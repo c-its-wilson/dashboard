@@ -87,11 +87,11 @@ export default function Stats({ athlete }: { athlete: StravaInterface }) {
         </Grid>
         <Grid item sm={12} xs={12} md={6} lg={6}>
           <Histogram
-            name="Speed Distribution"
+            name="Pace Distribution"
             data={generateHistogramData(runs, "average_speed", 0.25, 1, 5)}
             dataLabel="Number of Runs"
             metric="average_speed"
-            xAxisLabel="Speed (km/h)"
+            xAxisLabel="Avg. Pace (mins / km)"
             yAxisLabel="Number of Runs"
           />
         </Grid>

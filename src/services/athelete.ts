@@ -119,7 +119,7 @@ class StravaAthlete implements StravaInterface {
       this.allActivities = await this.stravaClient.athlete.listActivities({
         id: this.client_id,
         access_token: this.stravaConfig.access_token,
-        per_page: 200,
+        per_page: 50,
       });
       this.runs = this.allActivities!.filter(({ type }) => type == "Run");
     } catch (e) {
