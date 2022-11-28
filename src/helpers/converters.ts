@@ -9,10 +9,11 @@ export const convertMetric = (param: string, value: any) => {
       // converts meters to KM
       return (Number(value) / 1000).toFixed(2);
     } else if (param.includes("speed")) {
-      // in m/s, convert to km/h
-      // return (Number(value) * 60 * 60 / 1000).toFixed(2);
       // in m/s, convert to mins/km
-      return (1 / ((Number(value) * 60) / 1000)).toFixed(2);
+      const s_km = 1000 / value;
+      const mins = Math.floor(s_km / 60);
+      const secs = s_km % 60;
+      return `${padTo2Digits(mins)}:${padTo2Digits(secs).substring(0, 2)}`;
     } else {
       throw new Error(
         `Error, unable to convert param ${param} with the value of ${value}`

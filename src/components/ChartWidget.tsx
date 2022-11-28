@@ -32,6 +32,7 @@ const Histogram = ({
   metric,
   xAxisLabel,
   yAxisLabel,
+  xAxisReverse,
 }: {
   name: string;
   data: HistogramData[];
@@ -39,6 +40,7 @@ const Histogram = ({
   metric: string;
   xAxisLabel: string;
   yAxisLabel: string;
+  xAxisReverse?: boolean;
 }) => {
   ChartJS.register(
     CategoryScale,
@@ -76,6 +78,7 @@ const Histogram = ({
           display: true,
           text: xAxisLabel,
         },
+        reverse: xAxisReverse,
       },
     },
   };
