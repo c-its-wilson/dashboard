@@ -9,10 +9,10 @@ import { convertMetric } from "../helpers/converters";
 
 export default function Stats({ athlete }: { athlete: StravaInterface }) {
   const best10KmRuns = athlete.getFastestRunsAtDistance(10000, 3);
-  const bestRaceTime = convertMetric(
-    "moving_time",
-    best10KmRuns[0].moving_time
-  );
+  const bestRaceTime = best10KmRuns
+    ? convertMetric("moving_time", best10KmRuns[0].moving_time)
+    : "N/A";
+
   const runs = athlete.getAllRuns();
   const runs5Km = athlete.runsAtDistance(5000, 10);
 
@@ -35,7 +35,7 @@ export default function Stats({ athlete }: { athlete: StravaInterface }) {
                 <Grid item sm={12} xs={12} md={6} lg={12}>
                   <StatCard
                     label="10k time to beat"
-                    value={bestRaceTime + " mins"}
+                    value={best10KmRuns ? bestRaceTime + " mins" : "N/A"}
                   />
                 </Grid>
 
@@ -88,7 +88,7 @@ export default function Stats({ athlete }: { athlete: StravaInterface }) {
         <Grid item sm={12} xs={12} md={6} lg={6}>
           <Histogram
             name="Pace Distribution"
-            data={generateHistogramData(runs, "average_speed", 0.25, 1, 5)}
+            data={generateHistogramData(runs, "average_speed", 1, 1, 6)}
             dataLabel="Number of Runs"
             metric="average_speed"
             xAxisLabel="Avg. Pace (mins / km)"

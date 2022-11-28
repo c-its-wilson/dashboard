@@ -6,8 +6,12 @@ import { Run } from "../types/activities/run";
 import { Snowboarding } from "../types/activities/snowboarding";
 import { VirtualRun } from "../types/activities/virtualRun";
 import { Walk } from "../types/activities/walk";
+import sampleAthleteDate from "../samples/data.json";
+import sampleActivities from "../samples/activities.json";
 
 config();
+
+const LOCAL = "DEV";
 class StravaAthlete implements StravaInterface {
   client_id = process.env.REACT_APP_STRAVA_CLIENT_ID;
 
@@ -30,7 +34,7 @@ class StravaAthlete implements StravaInterface {
 
   stats: any | undefined;
 
-  allActivities: (Run | Snowboarding | VirtualRun | Walk)[] | undefined;
+  allActivities: (Run | Snowboarding | VirtualRun | Walk)[] = [];
 
   runs: Run[] = [];
 
@@ -85,10 +89,15 @@ class StravaAthlete implements StravaInterface {
         }
       );
     }
-    this.athleteData = await this.stravaClient.athlete.get({
-      id: this.client_id,
-      access_token: this.stravaConfig.access_token,
-    });
+    
+    if (process.env.REACT_APP_ENVIRONMENT === LOCAL) {
+      this.athleteData = sampleAthleteDate;
+    } else {
+      this.athleteData = await this.stravaClient.athlete.get({
+        id: this.client_id,
+        access_token: this.stravaConfig.access_token,
+      });
+    }
   }
 
   getClientID(): string {
@@ -115,17 +124,29 @@ class StravaAthlete implements StravaInterface {
   }
 
   async generateActivitiesData() {
-    try {
-      this.allActivities = await this.stravaClient.athlete.listActivities({
-        id: this.client_id,
-        access_token: this.stravaConfig.access_token,
-        per_page: 50,
-      });
-      this.runs = this.allActivities!.filter(({ type }) => type == "Run");
-    } catch (e) {
-      console.log("error");
-      console.dir(e);
+    let result;
+    let pageNum = 1;
+
+    if (process.env.REACT_APP_ENVIRONMENT) {
+      this.allActivities = sampleActivities;
+    } else {
+      do {
+        try {
+          result = await this.stravaClient.athlete.listActivities({
+            id: this.client_id,
+            access_token: this.stravaConfig.access_token,
+            page_size: 50,
+            page: pageNum,
+          });
+          this.allActivities.push(result);
+          pageNum++;
+        } catch (e) {
+          console.log("error");
+          console.dir(e);
+        }
+      } while (result);
     }
+    this.runs = this.allActivities!.filter(({ type }) => type == "Run");
   }
 
   getAllRuns(): Run[] {
@@ -148,8 +169,8 @@ class StravaAthlete implements StravaInterface {
 
   getFastestRunsAtDistance(distance: number, numOfRunsToGet: number) {
     return this.runsAtDistance(distance)
-      .sort((prev, curr) => (prev.moving_time < curr.moving_time ? -1 : 1))
-      .slice(0, numOfRunsToGet);
+    .sort((prev, curr) => (prev.moving_time < curr.moving_time ? -1 : 1))
+    .slice(0, numOfRunsToGet);
   }
 }
 
