@@ -2,10 +2,8 @@ import strava from "strava-v3";
 import { config } from "dotenv";
 import StravaInterface, { Shoes } from "../interfaces/stravaInterface";
 import { LoggedInAthlete } from "../types/athlete";
+import { Activities } from "../types/activities";
 import { Run } from "../types/activities/run";
-import { Snowboarding } from "../types/activities/snowboarding";
-import { VirtualRun } from "../types/activities/virtualRun";
-import { Walk } from "../types/activities/walk";
 import sampleAthleteDate from "../samples/data.json";
 import sampleActivities from "../samples/activities.json";
 
@@ -34,7 +32,7 @@ class StravaAthlete implements StravaInterface {
 
   stats: any | undefined;
 
-  allActivities: (Run | Snowboarding | VirtualRun | Walk)[] = [];
+  allActivities: Activities[] = [];
 
   runs: Run[] = [];
 
@@ -89,7 +87,7 @@ class StravaAthlete implements StravaInterface {
         }
       );
     }
-    
+
     if (process.env.REACT_APP_ENVIRONMENT === LOCAL) {
       this.athleteData = sampleAthleteDate;
     } else {
@@ -124,27 +122,37 @@ class StravaAthlete implements StravaInterface {
   }
 
   async generateActivitiesData() {
-    let result;
-    let pageNum = 1;
-
     if (process.env.REACT_APP_ENVIRONMENT) {
       this.allActivities = sampleActivities;
     } else {
-      do {
+      const MAX_ACTIVITIES = 300;
+      const PAGE_SIZE = 75;
+      const maxPageNum = Math.trunc(MAX_ACTIVITIES / PAGE_SIZE);
+      const pages = [...Array(maxPageNum).keys()];
+
+      const activitiesRequest = async (currentPage: number) => {
         try {
-          result = await this.stravaClient.athlete.listActivities({
+          return await this.stravaClient.athlete.listActivities({
             id: this.client_id,
             access_token: this.stravaConfig.access_token,
-            page_size: 50,
-            page: pageNum,
+            per_page: PAGE_SIZE,
+            page: currentPage,
           });
-          this.allActivities.push(result);
-          pageNum++;
         } catch (e) {
           console.log("error");
           console.dir(e);
         }
-      } while (result);
+      };
+
+      const requestResults = await Promise.allSettled(
+        pages.map((pageNum) => activitiesRequest(pageNum + 1))
+      );
+      requestResults.forEach((result) => {
+        if (result.status == "fulfilled") {
+          const activities = result.value as Activities[];
+          this.allActivities.push(...activities);
+        }
+      });
     }
     this.runs = this.allActivities!.filter(({ type }) => type == "Run");
   }
@@ -169,8 +177,8 @@ class StravaAthlete implements StravaInterface {
 
   getFastestRunsAtDistance(distance: number, numOfRunsToGet: number) {
     return this.runsAtDistance(distance)
-    .sort((prev, curr) => (prev.moving_time < curr.moving_time ? -1 : 1))
-    .slice(0, numOfRunsToGet);
+      .sort((prev, curr) => (prev.moving_time < curr.moving_time ? -1 : 1))
+      .slice(0, numOfRunsToGet);
   }
 }
 

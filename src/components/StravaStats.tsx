@@ -45,6 +45,13 @@ export default function Stats({ athlete }: { athlete: StravaInterface }) {
                     value={athlete.distanceRanInShoes() + " km"}
                   />
                 </Grid>
+                {/* TODO  */}
+                {/* <Grid item sm={12} xs={12} md={6} lg={12}>
+                  <StatCard
+                    label="Total Number of Runs"
+                    value={athlete.getAllRuns().length}
+                  />
+                </Grid> */}
               </Grid>
             </Grid>
           </Grid>
