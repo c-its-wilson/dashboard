@@ -123,6 +123,7 @@ class StravaAthlete implements StravaInterface {
 
   async generateActivitiesData() {
     if (process.env.REACT_APP_ENVIRONMENT) {
+      console.log('here')
       this.allActivities = sampleActivities;
     } else {
       const MAX_ACTIVITIES = 300;
@@ -155,6 +156,8 @@ class StravaAthlete implements StravaInterface {
       });
     }
     this.runs = this.allActivities!.filter(({ type }) => type == "Run");
+    console.log(this.allActivities[0].type)
+    console.log(this.runs.length)
   }
 
   getAllRuns(): Run[] {

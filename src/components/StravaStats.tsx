@@ -30,28 +30,26 @@ export default function Stats({ athlete }: { athlete: StravaInterface }) {
               />
             </Grid>
 
-            <Grid item lg={4} md={12} sm={12} xs={12}>
+            <Grid item xs={12} sm={12} md={6} lg={4}>
               <Grid container spacing={2}>
-                <Grid item sm={12} xs={12} md={6} lg={12}>
+                <Grid item xs={12} sm={4} md={12} lg={12}>
                   <StatCard
-                    label="10k time to beat"
-                    value={best10KmRuns ? bestRaceTime + " mins" : "N/A"}
-                  />
-                </Grid>
-
-                <Grid item sm={12} xs={12} md={6} lg={12}>
-                  <StatCard
-                    label="Total Distance in current shoes"
+                    label="Ran in shoes"
                     value={athlete.distanceRanInShoes() + " km"}
                   />
                 </Grid>
-                {/* TODO  */}
-                {/* <Grid item sm={12} xs={12} md={6} lg={12}>
+                <Grid item xs={6} sm={4} md={6} lg={6}>
                   <StatCard
-                    label="Total Number of Runs"
+                    label="10k time to beat"
+                    value={best10KmRuns ? bestRaceTime : "N/A"}
+                  />
+                </Grid>
+                <Grid item xs={6} sm={4} md={6} lg={6}>
+                  <StatCard
+                    label="Total No. of Runs"
                     value={athlete.getAllRuns().length}
                   />
-                </Grid> */}
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
@@ -72,7 +70,8 @@ export default function Stats({ athlete }: { athlete: StravaInterface }) {
             metricLabel="Time"
           />
         </Grid>
-        <Grid item sm={12} xs={12} md={6} lg={6}>
+
+        <Grid item xs={12} sm={12} md={6} lg={6}>
           <Histogram
             name="5km Run Distribution"
             data={generateHistogramData(runs5Km, "moving_time", 30, 1200, 2100)}
@@ -82,7 +81,8 @@ export default function Stats({ athlete }: { athlete: StravaInterface }) {
             yAxisLabel="Number of Runs"
           />
         </Grid>
-        <Grid item sm={12} xs={12} md={6} lg={6}>
+
+        <Grid item xs={12} sm={12} md={6} lg={6}>
           <Histogram
             name="Run Duration Distribution"
             data={generateHistogramData(runs, "moving_time", 60)}
@@ -92,7 +92,7 @@ export default function Stats({ athlete }: { athlete: StravaInterface }) {
             yAxisLabel="Number of Runs"
           />
         </Grid>
-        <Grid item sm={12} xs={12} md={6} lg={6}>
+        <Grid item xs={12} sm={12} md={6} lg={6}>
           <Histogram
             name="Pace Distribution"
             data={generateHistogramData(runs, "average_speed", 0.25, 2, 4.5)}
@@ -103,7 +103,7 @@ export default function Stats({ athlete }: { athlete: StravaInterface }) {
             xAxisReverse={true}
           />
         </Grid>
-        <Grid item sm={12} xs={12} md={6} lg={6}>
+        <Grid item xs={12} sm={12} md={6} lg={6}>
           <Histogram
             name="Run distance Distribution"
             data={generateHistogramData(runs, "distance", 500, 0, 25000)}

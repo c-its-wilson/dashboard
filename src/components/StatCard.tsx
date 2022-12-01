@@ -19,6 +19,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
         borderRadius: '50%',
         top: -110,
         right: -125,
+        opacity: 0.25,
     },
     '&:before': {
         content: '""',
@@ -29,7 +30,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
         borderRadius: '50%',
         top: -150,
         right: -50,
-        opacity: 0.5,
+        opacity: 0.25,
     }
 }));
 
