@@ -77,22 +77,24 @@ export default async function trams(req: VercelRequest, resp: VercelResponse) {
     }));
 
   const nextExchangeSqTram =
-    nearbyTrams.find((station) => {
-      station.stationName == "Exchange Square" &&
+    nearbyTrams.find(
+      (station) =>
+        station.stationName == "Exchange Square" &&
         station.trams.some(
           ({ destination, status }) =>
             destination == "East Didsbury" && status == "Due"
-        );
-    }) ?? "No Tram Avaiable";
+        )
+    ) ?? "No Tram Avaiable";
 
   const nextStPetersTram =
-    nearbyTrams.find((station) => {
-      station.stationName == "St Peter's Square" &&
+    nearbyTrams.find(
+      (station) =>
+        station.stationName == "St Peter's Square" &&
         station.trams.some(
           ({ destination, status }) =>
             destination == "Eccles via MediaCityUK" && status == "Due"
-        );
-    }) ?? "No Tram Avaiable";
+        )
+    ) ?? "No Tram Avaiable";
 
   const respBody = {
     nextExchangeSqTram,
