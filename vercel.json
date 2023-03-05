@@ -5,6 +5,9 @@
       },
       "api/kanye.ts": {
         "maxDuration": 10
+      },
+      "api/commute.ts": {
+        "maxDuration": 10
       }
     },
     "cleanUrls": true,
