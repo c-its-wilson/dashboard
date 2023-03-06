@@ -33,7 +33,7 @@ type Metrolink = {
 };
 
 const TIME_TO_WALK_EXSQ = 5;
-const TIME_TO_WALK_STPSQ = 10;
+const TIME_TO_WALK_STPSQ = 12;
 
 export default async function trams(req: VercelRequest, resp: VercelResponse) {
   const { REACT_APP_TFGM_KEY } = process.env;
@@ -103,20 +103,33 @@ export default async function trams(req: VercelRequest, resp: VercelResponse) {
       tram.status == "Due" &&
       Number(tram.wait) > TIME_TO_WALK_EXSQ
   );
+
   const timeToNextMediaCityTram = nextStPetersArrivals?.trams.find(
     (tram) =>
       tram.destination == "Eccles via MediaCityUK" &&
       tram.status == "Due" &&
-      Number(tram.wait) < TIME_TO_WALK_STPSQ
+      Number(tram.wait) > TIME_TO_WALK_STPSQ
   );
 
   let message = "";
 
-  if (timeToNextEastDidsburyTram && timeToNextMediaCityTram) {
+  if (!timeToNextEastDidsburyTram && !!timeToNextMediaCityTram) {
+    message = `No upcoming trams at Exchange Sq, head to St Peter's, the tram there is in ${timeToNextMediaCityTram.wait} mins`;
+  } else if (!!timeToNextEastDidsburyTram && !timeToNextMediaCityTram) {
+    message = "No upcoming Media City trams coming to St Peter's";
+  } else if (!timeToNextEastDidsburyTram && !timeToNextMediaCityTram) {
+    message = "Unable to find any trams, please check again 😔";
+  } else if (timeToNextEastDidsburyTram && timeToNextMediaCityTram) {
+    console.log(
+      `the next time at ex sq is in ${timeToNextEastDidsburyTram.wait} mins `
+    );
+    console.log(
+      `the next time at st p sq is in ${timeToNextMediaCityTram.wait} mins `
+    );
     if (timeToNextMediaCityTram < timeToNextEastDidsburyTram) {
-      message = "Please head to St Peter's Sqare 🤙";
+      message = `Please head to St Peter's Sqare, the tram is in ${timeToNextMediaCityTram.wait} mins 🤙`;
     } else {
-      message = "Please head to Exchange Sq 🤙";
+      message = `Please head to Exchange Sq, the tram is in ${timeToNextEastDidsburyTram.wait} mins 🤙`;
     }
   } else {
     message = "Unable to find trams, please check again 😔";
