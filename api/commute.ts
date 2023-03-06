@@ -32,8 +32,9 @@ type Metrolink = {
   LastUpdated: string;
 };
 
-const TIME_TO_WALK_EXSQ = 5;
-const TIME_TO_WALK_STPSQ = 12;
+const TIME_TO_WALK_EXS = 5;
+const TIME_TO_WALK_SPS = 12;
+const PGS_SPS_TRAVEL_TIME = 3;
 
 export default async function trams(req: VercelRequest, resp: VercelResponse) {
   const { REACT_APP_TFGM_KEY } = process.env;
@@ -51,85 +52,81 @@ export default async function trams(req: VercelRequest, resp: VercelResponse) {
     .filter(
       ({ StationLocation }) =>
         StationLocation == "St Peter's Square" ||
-        StationLocation == "Exchange Square"
+        StationLocation == "Exchange Square" ||
+        StationLocation == "Piccadilly Gardens"
     )
-    .map((platform) => ({
-      id: platform.Id,
-      stationName: platform.StationLocation,
-      trams: [
-        {
-          destination: platform.Dest0,
-          size: platform.Carriages0,
-          status: platform.Status0,
-          wait: platform.Wait0,
-        },
-        {
-          destination: platform.Dest1,
-          size: platform.Carriages1,
-          status: platform.Status1,
-          wait: platform.Wait1,
-        },
-        {
-          destination: platform.Dest2,
-          size: platform.Carriages2,
-          status: platform.Status2,
-          wait: platform.Wait2,
-        },
-      ],
-      message: platform.MessageBoard,
-    }));
+    .flatMap((platform) => [
+      {
+        stationName: platform.StationLocation,
+        destination: platform.Dest0,
+        size: platform.Carriages0,
+        status: platform.Status0,
+        wait: platform.Wait0,
+      },
+      {
+        stationName: platform.StationLocation,
+        destination: platform.Dest1,
+        size: platform.Carriages1,
+        status: platform.Status1,
+        wait: platform.Wait1,
+      },
+      {
+        stationName: platform.StationLocation,
+        destination: platform.Dest2,
+        size: platform.Carriages2,
+        status: platform.Status2,
+        wait: platform.Wait2,
+      },
+    ]);
 
-  const nextExchangeSqArrivals = nearbyTrams.find(
-    (station) =>
-      station.stationName == "Exchange Square" &&
-      station.trams.some(
-        ({ destination, status }) =>
-          destination == "East Didsbury" && status == "Due"
-      )
+  const nextEastDidsburyTram = nearbyTrams.find(
+    ({ stationName, destination, status, wait }) =>
+      stationName == "Exchange Square" &&
+      destination == "East Didsbury" &&
+      status == "Due" &&
+      Number(wait) > TIME_TO_WALK_EXS
   );
 
-  const nextStPetersArrivals = nearbyTrams.find(
-    (station) =>
-      station.stationName == "St Peter's Square" &&
-      station.trams.some(
-        ({ destination, status }) =>
-          destination == "Eccles via MediaCityUK" && status == "Due"
-      )
-  );
-
-  const timeToNextEastDidsburyTram = nextExchangeSqArrivals?.trams.find(
-    (tram) =>
-      tram.destination === "East Didsbury" &&
-      tram.status == "Due" &&
-      Number(tram.wait) > TIME_TO_WALK_EXSQ
-  );
-
-  const timeToNextMediaCityTram = nextStPetersArrivals?.trams.find(
-    (tram) =>
-      tram.destination == "Eccles via MediaCityUK" &&
-      tram.status == "Due" &&
-      Number(tram.wait) > TIME_TO_WALK_STPSQ
-  );
+  const nextMediaCityTram =
+    nearbyTrams.find(
+      ({ stationName, destination, status, wait }) =>
+        stationName == "St Peter's Square" &&
+        destination == "Eccles via MediaCityUK" &&
+        status == "Due" &&
+        Number(wait) > TIME_TO_WALK_SPS
+    ) ??
+    nearbyTrams.find(
+      ({ stationName, destination, status }) =>
+        stationName == "Piccadilly Gardens" &&
+        destination == "Eccles via MediaCityUK" &&
+        status == "Due"
+    );
 
   let message = "";
 
-  if (!timeToNextEastDidsburyTram && !!timeToNextMediaCityTram) {
-    message = `No upcoming trams at Exchange Sq, head to St Peter's, the tram there is in ${timeToNextMediaCityTram.wait} mins`;
-  } else if (!!timeToNextEastDidsburyTram && !timeToNextMediaCityTram) {
-    message = "No upcoming Media City trams coming to St Peter's";
-  } else if (!timeToNextEastDidsburyTram && !timeToNextMediaCityTram) {
+  if (!nextEastDidsburyTram && !nextMediaCityTram) {
     message = "Unable to find any trams, please check again 😔";
-  } else if (timeToNextEastDidsburyTram && timeToNextMediaCityTram) {
-    console.log(
-      `the next time at ex sq is in ${timeToNextEastDidsburyTram.wait} mins `
-    );
-    console.log(
-      `the next time at st p sq is in ${timeToNextMediaCityTram.wait} mins `
-    );
-    if (timeToNextMediaCityTram < timeToNextEastDidsburyTram) {
-      message = `Please head to St Peter's Sqare, the tram is in ${timeToNextMediaCityTram.wait} mins 🤙`;
-    } else {
-      message = `Please head to Exchange Sq, the tram is in ${timeToNextEastDidsburyTram.wait} mins 🤙`;
+  } else if (nextEastDidsburyTram && !nextMediaCityTram) {
+    message = "No upcoming Media City trams coming to St Peter's";
+  } else if (!nextEastDidsburyTram && nextMediaCityTram) {
+    message = `No upcoming trams at Exchange Sq, head to St Peter's, the tram there is in ${nextMediaCityTram.wait} mins`;
+  } else if (nextEastDidsburyTram && nextMediaCityTram) {
+    if (nextMediaCityTram.stationName == "St Peter's Square") {
+      if (Number(nextMediaCityTram.wait) < Number(nextEastDidsburyTram.wait)) {
+        message = `Please head to St Peter's Sqare, the tram is in ${nextMediaCityTram.wait} mins 🤙`;
+      } else {
+        message = `Please head to Exchange Sq, the tram is in ${nextEastDidsburyTram.wait} mins 🤙`;
+      }
+    }
+    if (nextMediaCityTram.stationName == "Piccadilly Gardens") {
+      if (
+        Number(nextMediaCityTram.wait) + PGS_SPS_TRAVEL_TIME <
+        Number(nextEastDidsburyTram.wait)
+      ) {
+        message = `Please head to St Peter's Sqare, the tram is in ${nextMediaCityTram.wait} mins 🤙`;
+      } else {
+        message = `Please head to Exchange Sq, the tram is in ${nextEastDidsburyTram.wait} mins 🤙`;
+      }
     }
   } else {
     message = "Unable to find trams, please check again 😔";
