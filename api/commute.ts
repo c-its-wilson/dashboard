@@ -61,21 +61,21 @@ export default async function trams(req: VercelRequest, resp: VercelResponse) {
         destination: platform.Dest0,
         size: platform.Carriages0,
         status: platform.Status0,
-        wait: platform.Wait0,
+        wait: Number(platform.Wait0),
       },
       {
         stationName: platform.StationLocation,
         destination: platform.Dest1,
         size: platform.Carriages1,
         status: platform.Status1,
-        wait: platform.Wait1,
+        wait: Number(platform.Wait1),
       },
       {
         stationName: platform.StationLocation,
         destination: platform.Dest2,
         size: platform.Carriages2,
         status: platform.Status2,
-        wait: platform.Wait2,
+        wait: Number(platform.Wait2),
       },
     ]);
 
@@ -84,7 +84,7 @@ export default async function trams(req: VercelRequest, resp: VercelResponse) {
       stationName == "Exchange Square" &&
       destination == "East Didsbury" &&
       status == "Due" &&
-      Number(wait) > TIME_TO_WALK_EXS
+      wait > TIME_TO_WALK_EXS
   );
 
   const nextMediaCityTram =
@@ -93,7 +93,7 @@ export default async function trams(req: VercelRequest, resp: VercelResponse) {
         stationName == "St Peter's Square" &&
         destination == "Eccles via MediaCityUK" &&
         status == "Due" &&
-        Number(wait) > TIME_TO_WALK_SPS
+        wait > TIME_TO_WALK_SPS
     ) ??
     nearbyTrams.find(
       ({ stationName, destination, status }) =>
@@ -112,24 +112,24 @@ export default async function trams(req: VercelRequest, resp: VercelResponse) {
     message = `No upcoming trams at Exchange Sq, head to St Peter's, the tram there is in ${nextMediaCityTram.wait} mins`;
   } else if (nextEastDidsburyTram && nextMediaCityTram) {
     if (nextMediaCityTram.stationName == "St Peter's Square") {
-      if (Number(nextMediaCityTram.wait) < Number(nextEastDidsburyTram.wait)) {
-        message = `Please head to St Peter's Sqare, the tram is in ${nextMediaCityTram.wait} mins 🤙`;
+      if (nextMediaCityTram.wait < nextEastDidsburyTram.wait) {
+        message = `Please head to St Peter's, the tram is in ${nextMediaCityTram.wait} mins 🤙`;
       } else {
         message = `Please head to Exchange Sq, the tram is in ${nextEastDidsburyTram.wait} mins 🤙`;
       }
     }
     if (nextMediaCityTram.stationName == "Piccadilly Gardens") {
+      const nextMediaCityTramPicc =
+        nextMediaCityTram.wait + PGS_SPS_TRAVEL_TIME;
       if (
-        Number(nextMediaCityTram.wait) + PGS_SPS_TRAVEL_TIME <
-        Number(nextEastDidsburyTram.wait)
+        nextMediaCityTramPicc > TIME_TO_WALK_SPS &&
+        nextMediaCityTramPicc < nextEastDidsburyTram.wait
       ) {
         message = `Please head to St Peter's Sqare, the tram is in ${nextMediaCityTram.wait} mins 🤙`;
       } else {
         message = `Please head to Exchange Sq, the tram is in ${nextEastDidsburyTram.wait} mins 🤙`;
       }
     }
-  } else {
-    message = "Unable to find trams, please check again 😔";
   }
 
   return resp.status(200).json(message);
