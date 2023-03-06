@@ -98,29 +98,28 @@ export default async function trams(req: VercelRequest, resp: VercelResponse) {
   );
 
   const timeToNextEastDidsburyTram = nextExchangeSqArrivals?.trams.find(
-    (tram) => tram.destination === "East Didsbury" && tram.status == "Due"
+    (tram) =>
+      tram.destination === "East Didsbury" &&
+      tram.status == "Due" &&
+      Number(tram.wait) > TIME_TO_WALK_EXSQ
   );
-
   const timeToNextMediaCityTram = nextStPetersArrivals?.trams.find(
     (tram) =>
-      tram.destination == "Eccles via MediaCityUK" && tram.status == "Due"
+      tram.destination == "Eccles via MediaCityUK" &&
+      tram.status == "Due" &&
+      Number(tram.wait) < TIME_TO_WALK_STPSQ
   );
 
   let message = "";
 
   if (timeToNextEastDidsburyTram && timeToNextMediaCityTram) {
-    const timeToWalkAndWait_EXSQ =
-      Number(timeToNextEastDidsburyTram.wait) + TIME_TO_WALK_EXSQ;
-    const timeToWalkAndWait_STPSQ =
-      Number(timeToNextMediaCityTram.wait) + TIME_TO_WALK_STPSQ;
-
-    if (timeToWalkAndWait_EXSQ < timeToWalkAndWait_STPSQ) {
-      message = "Please head to Exchange Sq";
-    } else {
+    if (timeToNextMediaCityTram < timeToNextEastDidsburyTram) {
       message = "Please head to St Peter's Sqare 🤙";
+    } else {
+      message = "Please head to Exchange Sq 🤙";
     }
   } else {
-    message = "Unable to find trams, please check again 🤙";
+    message = "Unable to find trams, please check again 😔";
   }
 
   return resp.status(200).json(message);
