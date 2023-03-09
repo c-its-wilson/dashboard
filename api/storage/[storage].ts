@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { getAwsObject, updateAwsObject } from "../_aws";
+import { getAwsObject, updateAwsObject } from "../_aws.js";
 import { config } from "dotenv";
 import crypto from "crypto";
 
