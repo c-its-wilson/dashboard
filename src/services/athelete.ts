@@ -111,19 +111,15 @@ class StravaAthlete implements StravaInterface {
   }
 
   getCurrentShoes(): Shoes | undefined {
-    return this.athleteData!.shoes.find(({ primary }) => primary == true);
+    return this.athleteData!.shoes[0];
   }
 
   distanceRanInShoes() {
-    const shoes = this.athleteData!.shoes.find(
-      ({ primary }) => primary === true
-    );
-    return shoes ? shoes.converted_distance : "N/A";
+    return this.athleteData!.shoes[0].converted_distance ?? "N/A";
   }
 
   async generateActivitiesData() {
     if (process.env.REACT_APP_ENVIRONMENT) {
-      console.log('here')
       this.allActivities = sampleActivities;
     } else {
       const MAX_ACTIVITIES = 300;
@@ -156,8 +152,6 @@ class StravaAthlete implements StravaInterface {
       });
     }
     this.runs = this.allActivities!.filter(({ type }) => type == "Run");
-    console.log(this.allActivities[0].type)
-    console.log(this.runs.length)
   }
 
   getAllRuns(): Run[] {
