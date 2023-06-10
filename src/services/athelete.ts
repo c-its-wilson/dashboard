@@ -115,7 +115,8 @@ class StravaAthlete implements StravaInterface {
   }
 
   distanceRanInShoes() {
-    return this.athleteData!.shoes[0].converted_distance ?? "N/A";
+    const shoes = this.athleteData!.shoes[0];
+    return shoes ? shoes.converted_distance.toString() : "N/A";
   }
 
   async generateActivitiesData() {
